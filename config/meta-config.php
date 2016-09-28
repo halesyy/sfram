@@ -1,0 +1,50 @@
+<?php
+  # Each entry will add a new meta [name="key" content="value"] to each web page.
+  $mconfig = [
+    'keywords' => 'your, keywords',
+    'description' => '150 words',
+    'subject' => 'websites subject',
+    'copyright' => 'company name',
+    'language' => 'ES',
+    'robots' => 'index,follow',
+    'revised' => 'Sunday, August 21st, 2016, 4:46pm',
+    'abstract' => '',
+    'topic' => '',
+    'summary' => '',
+    'Classification' => 'Business',
+    'author' => 'name, email@email.com',
+    'designer' => '',
+    'reply-to' => 'email@email.com',
+    'owner' => '',
+    'url' => 'http://websiteadress.com',
+    'identifier-URL' => 'http://websiteadress.com',
+    'directory' => 'submission',
+    'pagename' => 'page name',
+    'category' => '',
+    'coverage' => 'Worldwide',
+    'distribution' => 'Global',
+    'rating' => 'General',
+    'revisit-after' => '7 days',
+    'subtitle' => 'This is my subtitle',
+    'target' => 'all',
+    'HandheldFriendly' => 'True',
+    'MobibileOptimized' => '320',
+    'date' => 'Aug. 21, 2016',
+    'search_date' => '2016-08-21',
+    'DC.title' => 'Unstoppable Robot Ninja',
+    'ResourceLoaderDynaamicStyles' => '',
+    'medium' => 'blog',
+    'syndication-source' => 'https://mashable.com/2008/12/24/free-brand-monitoring-tools/',
+    'original-source' => 'https://mashable.com/2008/12/24/free-brand-monitoring-tools/',
+    'verify-v1' => 'dV1r/ZJJdDEI++fKJ6iDEl6o+TMNtSu0kv18ONeqM0I=',
+    'y_key' => '1e39c508e0d87750',
+    'pageKey' => 'guest-home'
+  ];
+
+  $scratch_mconfig = [
+    'http-equiv' => ['Expires','0'],
+    'http-equiv' => ['Pragma','no-cache'],
+    'http-equiv' => ['Cache-Control','no-cache'],
+    'http-equiv' => ['imagetoolbar','no'],
+    'http-equiv' => ['x-dns-prefetch-control','off']
+  ];
