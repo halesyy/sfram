@@ -40,5 +40,9 @@
       public function display($arr) {
         echo '<pre>',print_r($arr),'</pre>';
       }
+      /* Functions for class-based access. */
+      public function implode($a, $b) {
+        return implode($a, $b);
+      }
 
   }

@@ -7,9 +7,10 @@
     $paac = new PAAC3_MAIN(); # (Compression Engine)
 
     $url = new url('/');
-    $tools = new tools();
+    $tools = new Tools();
     $html = new html();
     $token = new token();
+    $t = new time();
 
     # Variables given to code each time it's ran.
     $ip   = $_SERVER['REMOTE_ADDR'];
@@ -22,3 +23,28 @@
     $cur = $current;
     $basic = $tools;
     $tool = $tools;
+
+    # Managing if the user is signed in or not.
+    if (isset($_SESSION['signedin'])) $is_signedin = true;
+      else $is_signedin = false;
+
+    # This is a LogicController - under here is where you configure all your needs.
+      $lc = new LogicController();
+        $lc->config([
+          'SUPER-ADM'  => 'SESSION_signedin==1',
+          'LOGGED-IN'  => 'SESSION_signedin',
+          'DONT-TRACK' => 'BROWSER_DNT'
+        ]);
+
+
+
+
+
+
+
+
+
+
+
+
+    #

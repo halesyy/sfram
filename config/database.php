@@ -14,7 +14,7 @@
   # Database config.
     $db = [
       'host' => 'localhost',
-      'db'   => 'test',
+      'db'   => 'forum',
       'user' => 'root',
       'pass' => 'EM',
 
@@ -22,9 +22,9 @@
     ];
   # Auth config.
     $authv = [
-      'key' => 'test',
+      'key' => '91sbg93b8ams;s',
       'algotype' => 'ripemd160',
-      'salt' => 'salt',
+      'salt' => 's92nsgopwlx',
 
       'tableName' => 'users',
       'usernameTable' => 'username',
@@ -41,6 +41,9 @@
         # Making the connection.
         $psm = new PSM("{$db['host']} {$db['db']} {$db['user']} {$db['pass']}",['safeconnection' => $db['safeconnection']]);
         $pdo = $psm->handler;
+
+        # Making the user class if needed.
+        if ($is_signedin) $user = new user($_SESSION['signedin']);
 
         if ($use_auth) {
           $auth = new auth($psm);

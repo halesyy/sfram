@@ -10,19 +10,19 @@
       return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
     }
     // Encodes for javascript.
-    public function jEncode($text) {
+    public static function jEncode($text) {
       $new = str_replace('"', '', $text);
       return $new;
     }
     // Remakes for lower / caps want in text.
-    public function down($text) {
+    public static function down($text) {
       return strtolower($text);
     }
-    public function up($text) {
+    public static function up($text) {
       return strtoupper($text);
     }
     // Limits text length.
-    public function limit($string, $length = 10) {
+    public static function limit($string, $length = 10) {
       # Will initialize the parts array, then the amount of characters the user wants to be put in the array then returning the imploded string.
       $parts = [];
       for ($i = 0; $i <= strlen($string); $i++) {
@@ -30,17 +30,17 @@
       } return implode('',$parts).'...';
     }
     // Gets time date currently.
-    public function date($date = 'j - m - y') {
+    public static function date($date = 'j - m - y') {
       date_default_timezone_set('Australia/Sydney');
       $timedate = date($date);
       return $timedate;
     }
     // Getting the current day of the year. (for daily updates kind-of-thing)
-    public function dooty() {
+    public static function dooty() {
       return date('z');
     }
     # Get time reference - gets the difference between time() function calls.
-    public function GTR($before, $after) {
+    public static function GTR($before, $after) {
       $reference = $after - $before;
       // Sets up the references.
       $second = 1;
@@ -62,7 +62,7 @@
       }
     }
     // Will reconstruct a string getting the areas (example - 0 1 2) and returning that string, example "string" then inputting "string" and 0,1,2 you will get a return of str.
-    public function reconstruct($string, $selections) {
+    public static function reconstruct($string, $selections) {
       $returnStore = array(); # Where the return is placed.
 
       // Loops each letter in string (selections).
@@ -79,7 +79,7 @@
       return implode('', $returnStore);
     }
     // Will display all items in an array.
-    public function display($array) {
+    public static function display($array) {
       echo '<pre>',print_r($array),'</pre>';
     }
 
@@ -87,7 +87,7 @@
     # CAREFULLY, so that they're FUCKING PERFECT, it's so that during production everything is fucking
     # PERFECT WHEN YOURE DOING YOUR APP...
 
-    public function safe_HASONLYNUMBERS($string) {
+    public static function safe_HASONLYNUMBERS($string) {
       # An old fashioned method for making sure a string is number only.
       $non_numbers = 0;
       $numbers = range('0', '9');
@@ -105,13 +105,13 @@
         else return true;
     }
     # For checking if a string contains another string, if ab contains a return true, ez. :D
-    public function string_contains($string, $has) {
+    public static function string_contains($string, $has) {
       # Getting the amount of letters in each string.
       if (strpos($string, $has) !== false) return true;
         else return false;
     }
     # For quick-parse loading.
-    public function load($location, $typeset = 1, $addFromDir = false) {
+    public static function load($location, $typeset = 1, $addFromDir = false) {
       # EX STRING: backend functions auth.php
       if ($typeset == 1) $location = str_replace(':','/',$location);
         else if ($typeset == 2) $location = str_replace(' ','/',$location);
@@ -125,7 +125,60 @@
         # Will require the file now.
         require "$location";
       }
-
     }
+
+
+
+    public static function stable() {
+      echo "<table class='mdl-data-table mdl-js-data-table mdl-shadow--2dp' style='font-family: Open Sans, Roboto, Arial; margin: 20px;'>";
+    } public static function etable() {
+      echo "</table>";
+    }
+
+    # Will create a table from the string given.
+    public static function table($str) { global $tools;
+      $this->stable(); # Start table.
+        $rows = explode("\n",$str);
+        # Header management - build.
+          echo "<thead><tr>";
+          foreach (explode(' ',$rows[0]) as $thead_part) {
+            $thead_part = str_replace('_',' ',$thead_part);
+            echo "<th>$thead_part</th>";
+            // echo $thead_part.'<br/>';
+          }
+          echo "</tr></thead>";
+
+        # Body management.
+          echo "<tbody>";
+          for ($i = 1; $i <= count(explode("\n",$str)) - 1; $i++) {
+            $tbody_part = explode(' ',$rows[$i]);
+            echo "<tr>";
+              foreach ($tbody_part as $data_piece) {
+                # Data_piece = a single piece of the table.
+                $data_piece = str_replace('_',' ',$data_piece);
+                if ($data_piece == '-') {
+                  echo "<td style='font-size: 10px;'>-----</td>";
+                } else {
+                  echo "<td>$data_piece</td>";
+                }
+              }
+            echo "</tr>";
+          }
+          echo "</tbody>";
+      $this->etable(); # End table.
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     #
   }

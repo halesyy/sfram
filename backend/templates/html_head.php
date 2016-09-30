@@ -3,19 +3,23 @@
 
   # The most ghetto "DEPENDANCY MANAGER" ever. ;) Thank Jek <3
     $plugins = [
-      'jquery' => true,
+      'jquery' => false,
+      'jquery-form-js' => false,
       'mdl' => false,
       'materialize' => false,
       'material-icons' => false,
-      'font-awesome' => true
+      'font-awesome' => false
     ];
     $plugin_files = [
       'jquery' => [
         ['js','https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js']
       ],
+      'jquery-form-js' => [
+        ['js','http://malsup.github.io/jquery.form.js']
+      ],
       'mdl' => [
-        ['js','https://code.getmdl.io/1.2.0/material.min.js'],
-        ['css','https://code.getmdl.io/1.2.0/material.indigo-pink.min.css','https://fonts.googleapis.com/icon?family=Material+Icons']
+        ['js','https://code.getmdl.io/1.2.1/material.min.js'],
+        ['css','https://code.getmdl.io/1.2.1/material.indigo-pink.min.css','https://fonts.googleapis.com/icon?family=Material+Icons']
       ],
       'materialize' => [
         ['js','https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js'],
@@ -61,11 +65,41 @@
 
       'always' => [
         # Going to always be added no matter the page.
-        ['css','/public/css/cssreset.css']
+        // ['css','/public/css/cssreset.css','/public/css/always.css'],
+        // ['js','/public/js/always.js']
       ],
 
       'index|home' => [
-        ['title','Jek\'s Framework']
+        # Adding all the index / home files into the code.
+        ['css',
+          'http://fonts.googleapis.com/css?family=Open+Sans:400,300,700',
+          // '/public/css/face-template-css/jquery.fancybox.css',
+          '/public/css/face-template-css/bootstrap.min.css',
+          '/public/css/face-template-css/owl.carousel.css',
+          '/public/css/face-template-css/slit-slider.css',
+          '/public/css/face-template-css/animate.css',
+          '/public/css/face-template-css/main.css',
+          '/public/css/face-template-css/my.css'
+        ],
+        ['js',
+          '/public/js/face-template-js/jquery.min.js',
+          '/public/js/face-template-js/modernizr.min.js',
+          '/public/js/face-template-js/bootstrap.min.js',
+          '/public/js/face-template-js/jquery.singlePageNav.min.js',
+          '/public/js/face-template-js/jquery.fancybox.pack.js',
+          '/public/js/face-template-js/owl.carousel.min.js',
+          '/public/js/face-template-js/jquery.easing.min.js',
+          '/public/js/face-template-js/jquery.slitslider.js',
+          '/public/js/face-template-js/jquery.ba-cond.min.js',
+          '/public/js/face-template-js/wow.min.js',
+          '/public/js/face-template-js/main.js',
+          '/public/js/face-template-js/my.js'
+        ]
+      ],
+
+      'dashboard' => [
+        ['css','/public/css/dashboard.css','https://fonts.googleapis.com/css?family=Roboto'],
+        ['js','/public/js/dashboard.js']
       ]
 
     ];
@@ -154,6 +188,7 @@
         global $tools;
         $files = array_merge($this->loaded_plugins,$this->loaded_files);
         $tools->display($files);
+        echo '<b>--------------------------------------------------------------------------------------------------</b><br/>';
       }
 
       # Checks to see if a plugin is loaded.

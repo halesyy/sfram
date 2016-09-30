@@ -26,6 +26,8 @@
       # Adding everything to be added in the HTML <Head> - imports etc...
       # IMPORT MANAGEMENT IS IN HERE.
       require "backend/templates/html_head.php";
+      # HEADER.
+      require "backend/templates/header.php";
       # Serving the users content that they want.
       # Adding the build file with variable setting then the template of HTML (the view).
       require "build/routes.php";

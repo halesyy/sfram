@@ -1,6 +1,5 @@
 <?php
   class PSMQuery extends PSMExtra {
-
       # The testing function to see if PSM is working.
       public function test() {
         echo 'A FUNCTION TO TEST IF PSM IS WORKING';
@@ -14,7 +13,7 @@
             $query = $handler->prepare($statement);
             $query->execute($binding);
           # Looping the query.
-            foreach ($query as $rows) $callback($rows);
+            foreach ($query as $rows) $callback($rows, $this, (object) $_POST);
         }
 
         public function query($statement, callable $callback, $user_supply = false) {
@@ -120,16 +119,17 @@
           public function connection() {
             return $this->handler;
           }
-
+          public function c() {
+            return $this->handler;
+          }
           public function close() {
             $this->handler = false;
           }
-
           public function glid() {
             # Getting the database handler.
               $db = $this->handler;
             # Retuning the last inserted ID.
-              return $db->lastInsetId();
+              return $db->lastInsertId();
           }
 
 
@@ -160,32 +160,32 @@
           //     foreach ($query as $rows) $callback($rows);
           // }
 
-          # INSERT QUERY.
-            public function insert($table, $inserts, $binds = false, $debug = false) {
-              # Getting the database handler.
-                $db = $this->handler;
-              # Begining to construct the query.
-                $statement = "INSERT INTO $table ";
-              # Breaking up the arrays from key and value into parts.
-              $cols = array(); $vals = array();
-                foreach ($inserts as $key => $value) {
-                  array_push($cols,$key);
-                  if ($binds !== false) array_push($vals,$value);
-                    else array_push($vals,'"'.$value.'"');
-                }
-               # Adding values to the statement.
-                $statement .= '('.implode(',',$cols).') ';
-                $statement .= 'VALUES ('.implode(',',$vals).')';
-              # Management for if the user wants to use a binding paramater type statement. (or they don't)
-                if ($binds !== false) { # Query Management for binding.
-                  $query = $db->prepare($statement);
-                  $query->execute($binds);
-                } else { # Query management for no-binding.
-                  $db->query($statement);
-                }
-              # Finished query.
-              if ($debug) echo "<b>STATEMENT_TRACE: </b> $statement";
-            }
+          # INSERT QUERY. - THE OLD ONE.
+            // public function oldinsert($table, $inserts, $binds = false, $debug = false) {
+            //   # Getting the database handler.
+            //     $db = $this->handler;
+            //   # Begining to construct the query.
+            //     $statement = "INSERT INTO $table ";
+            //   # Breaking up the arrays from key and value into parts.
+            //   $cols = array(); $vals = array();
+            //     foreach ($inserts as $key => $value) {
+            //       array_push($cols,$key);
+            //       if ($binds !== false) array_push($vals,$value);
+            //         else array_push($vals,'"'.$value.'"');
+            //     }
+            //    # Adding values to the statement.
+            //     $statement .= '('.implode(',',$cols).') ';
+            //     $statement .= 'VALUES ('.implode(',',$vals).')';
+            //   # Management for if the user wants to use a binding paramater type statement. (or they don't)
+            //     if ($binds !== false) { # Query Management for binding.
+            //       $query = $db->prepare($statement);
+            //       $query->execute($binds);
+            //     } else { # Query management for no-binding.
+            //       $db->query($statement);
+            //     }
+            //   # Finished query.
+            //   if ($debug) echo "<b>STATEMENT_TRACE: </b> $statement";
+            // }
           # UPDATE QUERY.
             public function update($table, $updates, $where = false, $binds = false, $debug = false) {
               # Getting the database handler.
@@ -209,9 +209,23 @@
                   $db->query($statement);
                 }
                 if ($debug) echo "<b>STATEMENT_TRACE: </b> $statement";
-              }
+            }
 
 
+      # Function that will return an array of each time it exists.
+      # Example, input: users, email - returns numerative array containing each email.
+      public function getall($table, $col) {
+        # Getting the database handler.
+        $db    = $this->handler;
+        # Structuring the query.
+        $q     = "SELECT $col FROM $table";
+        $store = []; # Store the returns.
+        # Looping.
+        foreach ($db->query($q) as $row) {
+          array_push($store,$row[$col]);
+        }
+        return $store;
+      }
 
 
 
@@ -223,6 +237,7 @@
         $this->temp['table'] = $table;
           return $this;
       }
+
 
       public function col($cols = '*') {
         # Building the first part of th query to be ran.
@@ -263,7 +278,7 @@
         return $this;
       }
 
-      public function print_query() {
+      public function print_query($a = false, $b = false, $c = false) {
         return $this->temp['query_so_far'];
       }
 
@@ -306,14 +321,14 @@
           $postValu = $values[1];
           if (isset($_POST[$postName]) && $_POST[$postName] == $postValu) {
             # Will call the function "do" with the PSM Var and $_POST.
-            $do($psm, (object) $_POST);
+            $do($psm, (object) $_POST, $_POST);
           }
         } else {
           # Ex value = [sub]
           $postName = $values[0];
           if (isset($_POST[$postName])) {
             # Will call the fucntion "do" with the PSM Var and $_POST.
-            $do($psm, (object) $_POST);
+            $do($psm, (object) $_POST, $_POST);
           }
         }
       }
@@ -325,28 +340,6 @@
           $this->post($value, $function);
         }
       }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -368,7 +361,7 @@
           return $data_string;
         }
         public function data_string() { return $this->save_details(); }
-
+        /* Function for parsing and returning the data_string given. */
         public static function parse_data_string($data_string) {
           if (count(explode(' ',$data_string)) == 2) {
             # String is to be parsed by DATABASE AUTH.
@@ -423,6 +416,54 @@
 
 
 
+        # THE START OF THE QUERY_MULTI_MANAGEMENT FUNCTIONS.
+          # The vars we need.
+          private $currentquery = false;
+
+        /* Function meant to save and set the current query. */
+        public function savequery($query, $binds = false) {
+          # Setting the query and saving it.
+            if ($binds) {
+              $q = $this->handler->prepare($query);
+              $q->execute($binds);
+            } else {
+              $q = $this->handler->query($query);
+            }
+          # Have the query, putting in the vars.
+            $this->currentquery = $q;
+        }
+
+        /* Function that will return the the row count of the query, the query set, and the raw query. */
+        public function data($query, $binds) {
+          # Saving the query to get the returned query in an object.
+            $this->savequery($query, $binds);
+          # Getting all data needed for return.
+            $q = $this->currentquery;
+            $rowcount = $q->rowCount();
+            $queryset = $q->fetch(PDO::FETCH_ASSOC);
+          # Returning all the data gathered.
+            return [
+              'query' => $q,
+              'rowcount' => $rowcount,
+              'rc' => $rowcount,
+              'set' => $queryset,
+              'queryset' => $queryset
+            ];
+        }
+
+
+
+
+
+
+
+
+
+
+        /* Returning the version of PSM. */
+        public function version() {
+          echo "<b>PHP version ".phpversion()."</b> - <b>PSM version {$this->version}</b>";
+        } public function v() { $this->version(); }
 
 
 
@@ -438,6 +479,96 @@
 
 
 
+
+        /* JEKS TESTING AREA! :D */
+          # This is where I test new functions to be added soon, to make PSM even better!
+          public function insert($insert_array) {
+            # Getting the table the user wants to work on.
+              if (empty($insert_array['table'])) {
+                # No table element in the array.
+                die('no given <b>table</b> key in insert given');
+              }
+              $table = $insert_array['table'];
+              unset($insert_array['table']);
+            # Manip to form the query.
+              $entries = count($insert_array);
+            # Gets the columns and the vals that we are adding into.
+              $cols = array_keys($insert_array);
+              $vals = array_values($insert_array);
+            # Setting the ?,? part of the query to be later inserted.
+              $temp = '';
+              for ($i = 1; $i <= $entries; $i++) {
+                $temp .= '?,';
+              } $temp = rtrim($temp,',');
+              $binds = $temp;
+              // $binds = str_replace(' ',',',$temp);
+            # Constructing the query.
+              $statement = "INSERT INTO $table ({$this->implode(',',$cols)}) VALUES ($binds)";
+            # Preparing the query, then executing the prepare statement with the values from the given array.
+              $query = $this->handler->prepare("INSERT INTO $table ({$this->implode(', ',$cols)}) VALUES ($binds)");
+              $query->execute($vals);
+            # The query was executed as wanted. - Hopefully lol... [this function took 2 hours to make cause of a stupid error]
+          }
+
+
+
+
+
+          /* This is a function that is used practically and is a testing function as well. */
+            # p = prepared, this is a function meant for a prepared and then executed statement.
+          public function pHelp($query = 'not-given') {
+            if ($query == 'not-given') die('the function <b>help</b> is meant to supply you with information on the query you just tried to execute, and should be used if is failing.');
+            # Getting the error info array.
+              $e = $query->errorInfo();
+              $r = []; # R = Return, returning array.
+            # Will start adding values into the Return array.
+              $r['PSM - pHelp'] = '<b>INFORMATION GATHERED FROM THE PREPARED / EXECUTED QUERY</b>';
+              $r['MYSQL eCode'] = $e[0].' - Google the meaning of the code';
+              $r['Drivr eCode'] = $e[1].'  - Error specific to the driver';
+            # Manip for getting the correct error message to display.
+              $search = [
+                '/Table \'(.*?)\.(.*?)\' doesn\'t exist/is',
+                '/You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near (.*?) at line (.*?)/is',
+                '/Unknown column \'(.*?)\' in \'(.*?)\'/is',
+                '/Column count doesn\'t match value count at row (.*?)/is'
+              ]; $replace = [
+                'The table <b>$2</b> doesn\'t exist in the database <b>$1</b>, did you spell it right?',
+                'There was a syntax error, if you want to combat it effectively, please seperate each SQL word into seperate lines then retry, now check <b>line: $2</b>',
+                'The column (<b>$1</b>) in the table you tried to insert/select from into doesn\'t exist, did you spell it right?',
+                'The amount of <b>column\'s</b> vs <b>inserting values</b> does not match up, re count them!'
+              ]; $r['Custom Mesg'] =  preg_replace($search,$replace,$e[2]);
+              $r['Raw Message'] = $e[2];
+              if ($query->execute()) $r['Query Execu'] = 'true';
+                else $r['Query Execu'] = 'false';
+            # Management for checking if there is even an error.
+              if ($e[0] == "00000") $succ = true;
+                else $succ = false;
+
+            # Return management.
+              if ($succ) {
+                echo 'The query executed correctly - There should be no need for the error report';
+              } else {
+                $this->display($r);
+              }
+          } #
+
+
+
+
+        /* This function is meant to take in data nad check if the table data exists, if so do the function given in the array, if not then do the function in array if given. */
+        public function if_entry_exists($array) {
+          # Management for the info given.
+            $info = $array['info'];
+            // $this->display($info);
+          # Will make the statement, will then construct the query and execute it.
+            $statement = "SELECT * FROM {$info['table']} WHERE {$info['where']}";
+            $q = $this->handler->prepare($statement);
+            $q->execute($info['binds']);
+              $rows = $q->rowCount();
+          # Managing the functions and calling one needed.
+            if ($rows) call_user_func($array['true'], $this, (object) $_POST, (object) $_SESSION);
+              else call_user_func($array['false'], $this, (object) $_POST, (object) $_SESSION);
+        }
 
 
 

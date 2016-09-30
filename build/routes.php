@@ -4,12 +4,10 @@
   # The route system, the slug that is to be loaded and the two files to be loaded after.
   $routing = [
     'index|home'  => ['index.build.php','index.view.php'],
-    'snake'       => 'adapt',
-    'test'        => 'adapt',
-    'create-page' => 'adapt',
-    'game'        => 'adapt'
+    'create'      => 'adapt',
   ];
 
+  # Routing management.
   foreach ($routing as $page => $requires) {
     foreach (explode('|',$page) as $slug) {
       if ($page == $current AND $requires == 'adapt') {

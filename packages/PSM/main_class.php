@@ -1,12 +1,13 @@
 <?php
-
   class PSM extends PSMQuery  {
+      # Setting vars for if we're using drivers, if we're connected, if we want a safe connection, and the handler variable for the PDO handler.
         public $usingdrivers    = false;
         public $connected       = false;
         public $safeconnection  = true;
         public $handler         = false;
-
-
+      # The current version of PSM that we're running.
+        public $version = "1.4.3";
+      # The init function to make the PDO connection and manage the data given.
         public function __construct($connectionVars = 'localhost test root EM', $options = false) {
           # Connecting to a database.
             # Option management.
@@ -29,7 +30,7 @@
               $password = str_replace('EM','',$password);
             # Attempting to make  aconnection to the database.
             try {
-              $db = new PDO("mysql:host=$host;dbname=$database", $username, $password);
+              $db = new PDO("mysql:host=$host;dbname=$database;charset=utf8", $username, $password);
               # Setting class variables.
               $this->connected = true;
               $this->handler   = $db;
@@ -40,7 +41,7 @@
                 if ($this->safeconnection === false) {
                   echo "<br/><i>Unsafe connection trace: <br/>";
                     echo "
-<font style='font-family: Monospace;'><pre>
+<font style='font-family: Monospace, Arial;'><pre>
   host-name: $host
   db-name..: $database
   username.: $username
