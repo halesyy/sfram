@@ -3,34 +3,45 @@
 
   # The most ghetto "DEPENDANCY MANAGER" ever. ;) Thank Jek <3
     $plugins = [
-      'jquery' => false,
+      'jquery' => true,
       'jquery-form-js' => false,
       'mdl' => false,
       'materialize' => false,
       'material-icons' => false,
-      'font-awesome' => false
+      'font-awesome' => false,
+      'bootstrap' => true,
+      'font-pack' => true
     ];
     $plugin_files = [
-      'jquery' => [
-        ['js','https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js']
-      ],
-      'jquery-form-js' => [
-        ['js','http://malsup.github.io/jquery.form.js']
-      ],
-      'mdl' => [
-        ['js','https://code.getmdl.io/1.2.1/material.min.js'],
-        ['css','https://code.getmdl.io/1.2.1/material.indigo-pink.min.css','https://fonts.googleapis.com/icon?family=Material+Icons']
-      ],
-      'materialize' => [
-        ['js','https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js'],
-        ['css','https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css']
-      ],
-      'material-icons' => [
-        ['css','https://fonts.googleapis.com/icon?family=Material+Icons']
-      ],
-      'font-awesome' => [
-        ['css','/packages/font-awesome/font-awesome.min.css']
-      ]
+      # All the plugin files that are included on a per-plugin base.
+        'jquery' => [
+          ['js','https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js']
+        ],
+        'jquery-form-js' => [
+          ['js','http://malsup.github.io/jquery.form.js']
+        ],
+        'mdl' => [
+          ['js','https://code.getmdl.io/1.2.1/material.min.js'],
+          ['css','https://code.getmdl.io/1.2.1/material.indigo-pink.min.css']
+        ],
+        'materialize' => [
+          ['js','https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js'],
+          ['css','https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css']
+        ],
+        'material-icons' => [
+          ['css','https://fonts.googleapis.com/icon?family=Material+Icons']
+        ],
+        'font-awesome' => [
+          ['css','/packages/font-awesome/font-awesome.min.css']
+        ],
+        'bootstrap' => [
+          ['js','https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'],
+          ['css','https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
+           'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css'/*optional theme*/]
+        ],
+        'font-pack' => [
+          ['css','https://fonts.googleapis.com/css?family=Roboto']
+        ]
     ];
   # Project management.
   # Importing.
@@ -65,42 +76,11 @@
 
       'always' => [
         # Going to always be added no matter the page.
-        // ['css','/public/css/cssreset.css','/public/css/always.css'],
-        // ['js','/public/js/always.js']
+        # If you want to add a css reset to your sure, just uncomment the cssreset add.
+          // ['css','/public/css/cssreset.css']
       ],
 
-      'index|home' => [
-        # Adding all the index / home files into the code.
-        ['css',
-          'http://fonts.googleapis.com/css?family=Open+Sans:400,300,700',
-          // '/public/css/face-template-css/jquery.fancybox.css',
-          '/public/css/face-template-css/bootstrap.min.css',
-          '/public/css/face-template-css/owl.carousel.css',
-          '/public/css/face-template-css/slit-slider.css',
-          '/public/css/face-template-css/animate.css',
-          '/public/css/face-template-css/main.css',
-          '/public/css/face-template-css/my.css'
-        ],
-        ['js',
-          '/public/js/face-template-js/jquery.min.js',
-          '/public/js/face-template-js/modernizr.min.js',
-          '/public/js/face-template-js/bootstrap.min.js',
-          '/public/js/face-template-js/jquery.singlePageNav.min.js',
-          '/public/js/face-template-js/jquery.fancybox.pack.js',
-          '/public/js/face-template-js/owl.carousel.min.js',
-          '/public/js/face-template-js/jquery.easing.min.js',
-          '/public/js/face-template-js/jquery.slitslider.js',
-          '/public/js/face-template-js/jquery.ba-cond.min.js',
-          '/public/js/face-template-js/wow.min.js',
-          '/public/js/face-template-js/main.js',
-          '/public/js/face-template-js/my.js'
-        ]
-      ],
 
-      'dashboard' => [
-        ['css','/public/css/dashboard.css','https://fonts.googleapis.com/css?family=Roboto'],
-        ['js','/public/js/dashboard.js']
-      ]
 
     ];
 
@@ -208,4 +188,10 @@
     # Adding the meta tags if wanted.
     if ($use_metas) require "backend/templates/metas.php";
 
-?></head><body>
+    # And permanent manual things you may want to add.
+?>
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width = device-width, initial-scale = 1" />
+
+</head><body>

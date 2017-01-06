@@ -42,8 +42,7 @@
         $psm = new PSM("{$db['host']} {$db['db']} {$db['user']} {$db['pass']}",['safeconnection' => $db['safeconnection']]);
         $pdo = $psm->handler;
 
-        # Making the user class if needed.
-        if ($is_signedin) $user = new user($_SESSION['signedin']);
+        # Set all database-related variables here, as in - $is_signedin - etc! :)
 
         if ($use_auth) {
           $auth = new auth($psm);

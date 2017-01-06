@@ -5,6 +5,7 @@
   $routing = [
     'index|home'  => ['index.build.php','index.view.php'],
     'create'      => 'adapt',
+    'test'        => 'adapt'
   ];
 
   # Routing management.
